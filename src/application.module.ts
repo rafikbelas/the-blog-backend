@@ -2,6 +2,8 @@ import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import cookieParser from "cookie-parser";
 import glob from "glob";
 
+import { AuthMiddleware } from "./auth.module/auth-middleware";
+
 const controllers = glob
   .sync("*.module/*-controller.ts", { cwd: __dirname, absolute: true }) // go through all the modules containing controllers
   .map(require) // require every one of them
@@ -12,6 +14,6 @@ const controllers = glob
 })
 export class ApplicationModule implements NestModule {
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {
-    consumer.apply(cookieParser()).forRoutes("/");
+    consumer.apply(cookieParser(), AuthMiddleware).forRoutes("/");
   }
 }
